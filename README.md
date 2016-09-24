@@ -1,7 +1,7 @@
 ## EnMicroMsg.db password cracker
 
 WARINING:  This tool should ONLY be used to crack your own db. DO NOT use it in ANY illegal circumstances.
-## 微信案桌版数据库(EnMicroMsg.db)密码破解工具
+## 微信安卓版数据库(EnMicroMsg.db)密码破解工具
 
 (This tool may solve issues listed in [https://github.com/ppwwyyxx/wechat-dump/wiki](https://github.com/ppwwyyxx/wechat-dump/wiki), [pysqlcipher.dbapi2.DatabaseError: file is encrypted or is not a database](https://github.com/ppwwyyxx/wechat-dump/issues/21) )
 
