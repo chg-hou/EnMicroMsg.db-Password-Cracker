@@ -1,0 +1,8 @@
+
+
+Working on it...
+
+Useful link:
+[http://daimi.au.dk/~jot2re/cuda/index.html](http://daimi.au.dk/~jot2re/cuda/index.html)
+[https://github.com/sdsunjay/cudapmk](https://github.com/sdsunjay/cudapmk)
+[http://http.developer.nvidia.com/GPUGems3/gpugems3_ch36.html](http://http.developer.nvidia.com/GPUGems3/gpugems3_ch36.html)
