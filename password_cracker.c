@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     int read;
     unsigned char *inbuffer, *outbuffer, *salt, *out, *key, *iv;
     EVP_CIPHER *evp_cipher;
-    EVP_CIPHER_CTX ectx;
+    EVP_CIPHER_CTX * ectx = EVP_CIPHER_CTX_new(); 
 
     OpenSSL_add_all_algorithms();
 
@@ -123,15 +123,15 @@ int main(int argc, char **argv)
 
         PKCS5_PBKDF2_HMAC_SHA1(pass, strlen(pass), salt, FILE_HEADER_SZ, PBKDF2_ITER, key_sz, key);
         out = outbuffer;
-        EVP_CipherInit(&ectx, evp_cipher, NULL, NULL, 0);
-        EVP_CIPHER_CTX_set_padding(&ectx, 0);
-        EVP_CipherInit(&ectx, NULL, key, iv, 0);
-        EVP_CipherUpdate(&ectx, out, &tmp_csz, inbuffer + FILE_HEADER_SZ, PAGESIZE - reserve_sz - FILE_HEADER_SZ);
+        EVP_CipherInit(ectx, evp_cipher, NULL, NULL, 0);
+        EVP_CIPHER_CTX_set_padding(ectx, 0);
+        EVP_CipherInit(ectx, NULL, key, iv, 0);
+        EVP_CipherUpdate(ectx, out, &tmp_csz, inbuffer + FILE_HEADER_SZ, PAGESIZE - reserve_sz - FILE_HEADER_SZ);
         csz = tmp_csz;
         out += tmp_csz;
-        EVP_CipherFinal(&ectx, out, &tmp_csz);
+        EVP_CipherFinal(ectx, out, &tmp_csz);
         csz += tmp_csz;
-        EVP_CIPHER_CTX_cleanup(&ectx);
+        EVP_CIPHER_CTX_cleanup(ectx);
 
 
         if(outbuffer[0] == 0x04 &&
