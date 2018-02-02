@@ -31,23 +31,27 @@ It takes about 5 ms to do a single PBKDF2 with 4000 iterations. So in the worst 
 There are two versions to choose: a C version and a Python one. The former should be a bit faster (the core relies on openssl. No difference in calculating the 4000 iterations).
 
 #### C version:
-1. install openssl dev package:
+1. install openssl dev package (tested with openssl 1.0.2g and openssl 1.1.0.g [(issue #4)](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/issues/4)  ):
+```
     $ sudo apt-get install libssl-dev
-
+```
 2. compile password_cracker.c :
+```
     $ gcc password_cracker.c  -l crypto -o password_cracker.o
-
+```
 3. modify parameters in "crack_enmicromsg_db_(C_version)".
     process_no:  total cores used.
     Note: If you successful get the pass but still cannot open the db, start from the next pass by change "pass_start".
     
 4. start:
-     python2 crack_enmicromsg_db_\(C_version\).py
-
+```
+    $ python2 crack_enmicromsg_db_\(C_version\).py
+```
 #### Python version:
 ##### Dependencies:
 + [pysqlcipher](https://pypi.python.org/pypi/pysqlcipher)
-      Demo purpose. Not well written.
+
+Demo purpose. Not well written.
 
 ### Got the pass, and then?
 Use the wonderful [wechat-dump](https://github.com/ppwwyyxx/wechat-dump) written by Yuxin Wu  to dump the whole db. You need to tweak a few lines in "decrypt-db.py" to use the key. Have fun!
@@ -58,3 +62,5 @@ Use the wonderful [wechat-dump](https://github.com/ppwwyyxx/wechat-dump) written
 [wechat-dump/decrypt-db.py](https://github.com/ppwwyyxx/wechat-dump/blob/master/decrypt-db.py) provides key parameters of WeChat db.
 
 [sqlcipher documentation](https://www.zetetic.net/sqlcipher/design/) : its detailed security features.
+
+[Fix issue #4: Will not compile against openssl 1.1](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/issues/4) : thanks [@couling](https://github.com/couling) for the openssl 1.1 patch.
