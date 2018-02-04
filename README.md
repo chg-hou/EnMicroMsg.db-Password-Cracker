@@ -56,6 +56,13 @@ Demo purpose. Not well written.
 ### Got the pass, and then?
 Use the wonderful [wechat-dump](https://github.com/ppwwyyxx/wechat-dump) written by Yuxin Wu  to dump the whole db. You need to tweak a few lines in "decrypt-db.py" to use the key. Have fun!
 
+### Scripts in tools folder
+
++ [decrypt_db_with_password.py](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/blob/master/tools/decrypt_db_with_password.py): when you have already known the password, use this script to get an decrypted database which can be viewed/edited by [DB Browser for SQLite](http://sqlitebrowser.org/).
+
++ [encrypt_db_again.py](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/blob/master/tools/encrypt_db_again.py): encrypting the db again. Note: (2018 Feb 04) not tested whether WeChat can open it correctly. 
+
+
 ### Acknowledge
 [sqlcipher-tools/decrypt.c](https://github.com/sqlcipher/sqlcipher-tools/blob/master/decrypt.c) helps me a lot to understand how sqlcipher works.
 
