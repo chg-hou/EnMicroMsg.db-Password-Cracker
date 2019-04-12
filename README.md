@@ -21,12 +21,15 @@ WeChat uses sqlcipher v2 to encrypt the database. Parts of the security features
 So, the fellowing is our strategy:
 get the first page; obtain IV from the last 16B and salt from the first 16B; iterate over all combinations of the possible passphrases; derivate the corresponding key. Decrypt the db. 
 
-We know that the original header of sqlite db is a 16B string: "SQLite format 3\0", which is replaced by the salt in the encrypted case. Following are 2B to describe page size (0x04 0x00), 1B write version (0x01) and 1B read version (0x01). We have 4 identical bytes to test whether we get the correct plain text. (Here we can just ignore collision. If you successfully get the pass but still cannot open the db, just skip the "false alert" and start from the next pass.)
+We know that the original header of sqlite db is a 16B string: "SQLite format 3\0", which is replaced by the salt in the encrypted case. Following are 2B to describe page size (0x04 0x00), 1B write version (~~0x01~~ 0x02) and 1B read version (~~0x01~~ 0x02). ~~We have 4 identical bytes to test whether we get the correct plain text.~~ (2019-04-12) From Wechat 7, Tencent user new write/read version (0x02), which will break our former detection. Now we will use the following three fixed bytes to test whether we get the correct plain text: 1. maximum embedded payload fraction (0x40) with offset 5; 2. minimum embedded payload fraction (0x20) with offset 6; 3. leaf payload fraction (0x20) with offset 7. (Here we can just ignore collision. If you successfully get the pass but still cannot open the db, just skip the "false alert" and start from the next pass.)
 
 It takes about 5 ms to do a single PBKDF2 with 4000 iterations. So in the worst case, it will take 16^7 * 0.005 /3600/24 =  15.5 days to crack. On a 8-core PC, it reduces to 2 days (sounds reasonable now).
 
 
 ### How to use?:
+
+Before cracking, please use [extract_key_from_cfg_files.py](#extract_key_from_cfg_files) to get the key if systemInfo.cfg and 
+CompatibleInfo.cfg are available.
 
 There are two versions to choose: a C version and a Python one. The former should be a bit faster (the core relies on openssl. No difference in calculating the 4000 iterations).
 
@@ -61,6 +64,13 @@ Use the wonderful [wechat-dump](https://github.com/ppwwyyxx/wechat-dump) written
 + [decrypt_db_with_password.py](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/blob/master/tools/decrypt_db_with_password.py): when you have already known the password, use this script to get an decrypted database which can be viewed/edited by [DB Browser for SQLite](http://sqlitebrowser.org/).
 
 + [encrypt_db_again.py](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/blob/master/tools/encrypt_db_again.py): encrypting the db again. Note: (2018 Feb 04) not tested whether WeChat can open it correctly. 
+
++ [extract_key_from_cfg_files.py](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/blob/master/tools/extract_key_from_cfg_files.py) <a name="extract_key_from_cfg_files"></a>: this script can extract key from **CompatibleInfo.cfg** and **systemInfo.cfg**. Please note that it is written in **Python 3**. Change the search_path first and then run the script with 
+```
+    $ python3 extract_key_from_cfg_files.py
+```
+
++ [GetDBKey.class](https://github.com/chg-hou/EnMicroMsg.db-Password-Cracker/blob/master/tools/GetDBKey.class): a java code can do the same work as extract_key_from_cfg_files.py. Copy from [https://bbs.pediy.com/thread-250714.htm](https://bbs.pediy.com/thread-250714.htm).
 
 
 ### Acknowledge
