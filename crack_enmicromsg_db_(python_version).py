@@ -1,5 +1,13 @@
 #!/usr/bin/env python2
 
+
+'''15fbee0 '''
+# ======================== Edit checkpoint and process_no==================
+checkpoint = '995'  # first three chars to start from
+process_no = 16
+# ========================================================================
+
+
 import os, sys
 import threading
 import multiprocessing
@@ -10,9 +18,10 @@ from pysqlcipher import dbapi2 as sqlite
 from hashlib import md5
 
 
+
 TOTAL_KEY_LENGTH = 7
 PROCESS_KEY_LENGTH = 3
-process_no = 12
+
 db = 'EnMicroMsg.db'
 output = 'output_db.db'
 
@@ -68,7 +77,7 @@ def worker(id, prefix):
             print(key)
 
     b = time.time() - a
-    print('%d: Total time: %f s, per loop: %f s' % (id, b, b / count))
+    print('%d: Total time: %f s, per loop: %f s, speed: %f 1/s' % (id, b, b / count, count / b))
     return '%d Done' % (id)
 
 DEFAULT_OUTPUT_DB_NAME = 'decrypted.db'
@@ -83,8 +92,19 @@ if __name__ == '__main__':
     result = []
     pool = multiprocessing.Pool(processes=process_no)
     id_a = 0
+    
+    RECOVERED_FLAG = True if checkpoint=='' else False
+    
     for i in itertools.product(str_list, repeat=key_length1):
         prefix = ''.join(i)
+        
+        if not RECOVERED_FLAG:
+            if prefix != checkpoint:
+                continue
+            else:
+                print("Continue from "+checkpoint)
+                RECOVERED_FLAG = True
+        
         result.append(pool.apply_async(worker, (id_a, prefix)))
         id_a += 1
         if os.path.exists(output):

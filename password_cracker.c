@@ -133,11 +133,13 @@ int main(int argc, char **argv)
         csz += tmp_csz;
         EVP_CIPHER_CTX_cleanup(ectx);
 
-
-        if(outbuffer[0] == 0x04 &&
-                outbuffer[1] == 0x00 &&
-                outbuffer[2] == 0x01 &&
-                outbuffer[3] == 0x01
+        // WeChat 7.0 use different write/read version
+        // [5] = 64; [6] = 32; [7] = 32; [56:(56+20)] = 0;
+        if( outbuffer[5] == 0x40 
+            && outbuffer[6] == 0x20 
+            && outbuffer[7] == 0x20
+            //&& outbuffer[56] == 0x00 
+            //&& outbuffer[57] == 0x00
           )
         {
             quit_flag = 1;
@@ -152,9 +154,10 @@ int main(int argc, char **argv)
             fclose(passfh);
 
             printf("outbuffer:\n");
-            for (int kk=0; kk<10; kk++)
+            int kk,kkk;
+            for (kk=0; kk<10; kk++)
             {
-                for (int kkk=0; kkk<10; kkk++)
+                for (kkk=0; kkk<10; kkk++)
                 {
                     printf("%02x ", outbuffer[kk*10 + kkk]);
                 }
