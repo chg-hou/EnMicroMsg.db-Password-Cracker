@@ -17,6 +17,7 @@ try:
     c = conn.cursor()
 
     c.execute("PRAGMA key = '" + key + "';")
+    c.execute("PRAGMA cipher_compatibility = 1;")
     c.execute("PRAGMA cipher_use_hmac = OFF;")
     c.execute("PRAGMA cipher_page_size = 1024;")
     c.execute("PRAGMA kdf_iter = 4000;")
